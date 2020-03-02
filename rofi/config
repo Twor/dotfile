@@ -1,0 +1,21 @@
+rofi.modi: drun
+rofi.lines: 5
+rofi.columns: 1
+rofi.width: 40
+rofi.drun-icon-theme: Pop
+rofi.show-icons: true
+rofi.sidebar-mode: false
+rofi.m: -4
+rofi.theme: andrea
+rofi.hide-scrollbar: true
+rofi.terminal: termite
+rofi.terminal:             termite
+rofi.ssh-client:           ssh
+rofi.ssh-command:          {terminal} -e {ssh-client} {host}
+rofi.run-command:          {cmd}
+rofi.run-shell-command:    {terminal} -e {cmd}
+rofi.disable-history:      false
+rofi.levenshtein-sort:     false
+rofi.case-sensitive:       false
+rofi.auto-select:          false
+rofi.parse-hosts:          false
