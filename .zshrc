@@ -84,10 +84,12 @@ source /usr/share/fzf/key-bindings.zsh
 
 # fzf settings
 export FZF_CTRL_T_COMMAND='find .'
-export https_proxy="http://127.0.0.1:7890"
-export http_proxy="http://127.0.0.1:7890"
-alias unsetproxy="unset http_proxy;unset https_proxy;unset all_proxy;echo \"Unset proxy successfully\" "
+#export https_proxy="http://127.0.0.1:7890"
+#export http_proxy="http://127.0.0.1:7890"
+alias setproxy="export ALL_PROXY=http://127.0.0.1:7890/"
+alias unsetproxy="unset ALL_PROXY"
+#alias unsetproxy="unset http_proxy;unset https_proxy;unset all_proxy;echo \"Unset proxy successfully\" "
 alias ipcn="curl myip.ipip.net"
-alias ip="curl ip.sb"
+#alias ip="curl ip.sb"
 export GOPATH=/srv/golang
 
