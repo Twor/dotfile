@@ -194,7 +194,7 @@ mode "resize" {
 }
 
 # Autostart applications
-exec --no-startup-id nitrogen --restore; sleep 1; compton -b
+exec --no-startup-id picom --experimental-backends -b
 exec --no-startup-id libinput-gestures-setup start
 #exec --no-startup-id nm-applet
 exec_always --no-startup-id $HOME/.config/polybar/launch
@@ -258,8 +258,8 @@ bindsym $mod+Ctrl+m exec termite -e 'alsamixer'
 bindsym $mod+t exec --no-startup-id pkill compton
 bindsym $mod+Shift+a exec --no-startup-id picom --experimental-backends -b
 bindsym Print exec --no-startup-id scrot
-bindsym $mod+Print --release exec --no-startup-id scrot -w
-bindsym $mod+Shift+Print --release exec --no-startup-id scrot -s
+bindsym $mod+Print exec --no-startup-id scrot -b
+bindsym $mod+Shift+Print exec --no-startup-id scrot -s
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # Lock screen
