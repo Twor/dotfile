@@ -1,3 +1,19 @@
+case $TERM in
+  (*xterm* | rxvt)
+
+    # Write some info to terminal title.
+    # This is seen when the shell prompts for input.
+    function precmd {
+      print -Pn "\e]0;%(1j,%j job%(2j|s|); ,)%~\a"
+    }
+    # Write command and args to terminal title.
+    # This is seen while the shell waits for a command to complete.
+    function preexec {
+      printf "\033]0;%s\a" "$1"
+    }
+
+  ;;
+esac
 # Disable software flow control
 stty -ixon
 
@@ -21,6 +37,7 @@ function prompt_git_status {
         echo "%{$fg[$prompt_color2]%} %{$reset_color%}"
     fi
 }
+
 
 PROMPT=$'%
 %{$fg[black]$bg[$prompt_color1]%} %n@%m %{$reset_color%}%
@@ -75,21 +92,38 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 setopt complete_aliases
 
+# 当补全命令的开关时禁用排序
+zstyle ':completion:complete:*:options' sort false
+
+# 当补全 _zlua 时，使用输入作为查询字符串
+#zstyle ':fzf-tab:complete:_zlua:*' query-string input
+
+# （实验性功能，未来可能更改）
+# 一些定义 extract 变量的样板代码
+# 稍后需要使用这个变量，请记得复制这段代码
+local extract="
+# 提取输入（当前选择的内容）
+local in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}
+# 获取当前补全状态的上下文（待补全内容的前面或者后面的东西）
+local -A ctxt=(\"\${(@ps:\2:)CTXT}\")
+# 真实路径
+local realpath=\${ctxt[IPREFIX]}\${ctxt[hpre]}\$in
+realpath=\${(Qe)~realpath}
+"
+
+# 补全 `kill` 命令时提供命令行参数预览
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
+zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+
+# 补全 cd 时使用 exa 预览其中的内容
+zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=always $realpath'
 # Plugins
-source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh \
-    || git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions
-source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
-    || git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting
+# source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh \
+#     || git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions
+# source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+#     || git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/fzf/key-bindings.zsh
-
-# fzf settings
-export FZF_CTRL_T_COMMAND='find .'
-#export https_proxy="http://127.0.0.1:7890"
-#export http_proxy="http://127.0.0.1:7890"
-alias setproxy="export ALL_PROXY=http://127.0.0.1:7890/"
-alias unsetproxy="unset ALL_PROXY"
-#alias unsetproxy="unset http_proxy;unset https_proxy;unset all_proxy;echo \"Unset proxy successfully\" "
-alias ipcn="curl myip.ipip.net"
-#alias ip="curl ip.sb"
-export GOPATH=/srv/golang
-
+export FZF_DEFAULT_COMMAND='fd --hidden --follow -E ".git" -E "node_modules" . /etc /home'
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --preview '(highlight -O ansi {} || cat {}) 2> /dev/null | head -500'"
