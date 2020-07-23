@@ -11,3 +11,5 @@ rofi.hide-scrollbar:        true
 rofi.line-margin:           0
 rofi.font:                  sans-serif 10
 rofi.theme:                 nerd
+! Terminal to use
+rofi.terminal:              termite
