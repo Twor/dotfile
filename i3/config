@@ -142,8 +142,9 @@ for_window [class="scrcpy"] floating enable
 for_window [instance="org.gnome.Nautilus"] floating enable, resize set 1000 700
 #for_window [title="ranger"] floating enable
 for_window [title="^musicbox$"] floating enable, move container to workspace 6
-for_window [title="alsamixer"] floating enable
-for_window [title="feh"] floating enable
+for_window [title="^alsamixer$"] floating enable
+for_window [class="GotoHTTP"] floating enable
+for_window [class="feh"] floating enable
 for_window [class="Drawing"] floating enable
 for_window [instance=indicator-stickynotes] sticky enable
 
@@ -205,6 +206,15 @@ mode "resize" {
 exec --no-startup-id libinput-gestures-setup start
 #exec --no-startup-id nm-applet
 exec_always --no-startup-id $HOME/.config/polybar/launch
+exec --no-startup-id fcitx5&
+bindsym $mod+Ctrl+m exec termite -e 'alsamixer'
+#bindsym $mod+Ctrl+f exec termite -e 'ranger'
+bindsym $mod+t exec --no-startup-id pkill picom
+bindsym $mod+Shift+a exec --no-startup-id picom --experimental-backends -b
+bindsym Print exec --no-startup-id scrot -e 'mv $f ~/Sync/'
+bindsym $mod+Print --release exec --no-startup-id scrot -bs  -e 'mv $f ~/Sync/'
+bindsym $mod+Shift+Print --release exec --no-startup-id scrot -s  -e 'mv $f ~/Sync/'
+bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # Theme colors
 client.focused          #272827 #272827 #657b83 #272827 #272827
@@ -258,23 +268,12 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
-# set power-manager and volume control
-exec --no-startup-id fcitx5&
-bindsym $mod+Ctrl+m exec termite -e 'alsamixer'
-#bindsym $mod+Ctrl+f exec termite -e 'ranger'
-bindsym $mod+t exec --no-startup-id pkill picom
-bindsym $mod+Shift+a exec --no-startup-id picom --experimental-backends -b
-bindsym Print exec --no-startup-id scrot
-bindsym $mod+Print --release exec --no-startup-id scrot -bs
-bindsym $mod+Shift+Print --release exec --no-startup-id scrot -s
-bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
-
 # Lock screen
-bindsym $mod+o exec --no-startup-id ~/.config/i3/lock.sh
+# bindsym $mod+o exec --no-startup-id ~/.config/i3/lock.sh
 # Wallpaper
 # exec_always --no-startup-id bwall
-exec_always --no-startup-id feh --bg-scale ~/Pictures/2.jpg
-
+# exec_always --no-startup-id ~/.fehbg
+exec_always --no-startup-id ~/.config/i3/feh.sh
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 0 -q set Master 2dB+ unmute
 bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 0 -q set Master 2db- unmute
