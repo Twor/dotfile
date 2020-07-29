@@ -91,26 +91,23 @@ compinit
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 setopt complete_aliases
+source /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+source /usr/share/autojump/autojump.zsh
 
+# source $HOME/.oh-my-zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
 # 当补全命令的开关时禁用排序
 zstyle ':completion:complete:*:options' sort false
 
 # 当补全 _zlua 时，使用输入作为查询字符串
 #zstyle ':fzf-tab:complete:_zlua:*' query-string input
 
-# （实验性功能，未来可能更改）
-# 一些定义 extract 变量的样板代码
-# 稍后需要使用这个变量，请记得复制这段代码
+# （实验性功能）cd 时在右侧预览目录内容
 local extract="
-# 提取输入（当前选择的内容）
-local in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}
-# 获取当前补全状态的上下文（待补全内容的前面或者后面的东西）
+# 提取输入
+in=\${\${\"\$(<{f})\"%\$'\0'*}#*\$'\0'}
+# 获取相关信息
 local -A ctxt=(\"\${(@ps:\2:)CTXT}\")
-# 真实路径
-local realpath=\${ctxt[IPREFIX]}\${ctxt[hpre]}\$in
-realpath=\${(Qe)~realpath}
 "
-
 # 补全 `kill` 命令时提供命令行参数预览
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
 zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
@@ -125,5 +122,7 @@ zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=alw
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/fzf/key-bindings.zsh
-export FZF_DEFAULT_COMMAND='fd --hidden --follow -E ".git" -E "node_modules" . /etc /home'
+source $HOME/.oh-my-zsh/plugins/fzf/fzf.plugin.zsh
+export FZF_DEFAULT_COMMAND="fd --exclude={.git,.idea,.vscode,.sass-cache,node_modules,build,.icons,icons} --type f"
+# export FZF_DEFAULT_COMMAND='fd --hidden --follow -E ".git" -E "node_modules" . /etc /home'
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --preview '(highlight -O ansi {} || cat {}) 2> /dev/null | head -500'"
