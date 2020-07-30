@@ -17,13 +17,13 @@ foreground = ${colors.foreground}
 background = ${colors.background}
 font-0 = SauceCodePro Nerd Font:style=Black:size=9;1
 font-1 = FontAwesome:pixelsize=10;1
-font-2 = SauceCodePro Nerd Font:style=Black:size=10;1
+font-2 = font-logos:style=Black:size=9;1
 
 padding-right = 2
 module-margin = 2
 modules-left   = i3 title
-# modules-center = spotify
-modules-right  = date ethernet arch-checkupdates wlan cpu temperature memory battery backlight
+modules-center = arch-checkupdates
+modules-right  = date ethernet wlan cpu temperature memory battery backlight
 cursor-click = pointer
 tray-padding = 5
 tray-position = right
